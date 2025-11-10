@@ -1,0 +1,989 @@
+sudo apt update
+sudo apt install python3-pip -y
+pip install notebook
+!pip install numpy pandas matplotlib seaborn scikit-learn tensorflow
+
+
+
+
+
+
+
+
+Experiment 2 MINST
+
+🧠 PART 1: What this experiment is about (super simple)
+This experiment is about teaching a computer to recognize images — for example, pictures of digits (0 to 9) using a type of Deep Learning model called a Feedforward Neural Network (FFN).
+You’ll use Keras (a library that makes Deep Learning easy) with TensorFlow (the backend that actually runs the math).
+We are basically:
+1.	Loading a dataset (like MNIST — images of handwritten digits).
+2.	Preparing the data so the model can understand it.
+3.	Building a small neural network (layers of neurons).
+4.	Training it — making the computer learn from the images.
+5.	Testing how well it learned.
+6.	Plotting graphs to see the learning process.
+Think of it like:
+🏫 Training a student (model) to recognize numbers by showing thousands of examples (training data), and then testing the student with unseen examples (testing data).
+________________________________________
+📘 PART 2: Step-by-step notes (easy and exam-ready)
+🧩 Aim
+To build and train a Feedforward Neural Network (FFN) using Keras and TensorFlow for classifying images (MNIST or CIFAR10).
+________________________________________
+🧠 Theory (in simple words)
+•	A Feedforward Neural Network is a type of Artificial Neural Network where data moves only in one direction — from input → hidden layers → output.
+•	Each neuron receives inputs, multiplies them by weights, adds a bias, and applies an activation function to decide what to pass forward.
+•	By training, the network adjusts its weights to correctly map inputs to outputs.
+For image classification:
+•	Input: pixel values of images (like 28×28 = 784 numbers for MNIST).
+•	Hidden layers: detect patterns (edges, shapes, etc.).
+•	Output layer: gives probabilities for 10 classes (digits 0–9).
+________________________________________
+🧾 Steps in the Experiment
+Step 1. Import necessary libraries
+We import:
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
+➡ These are the tools that let us build the neural network and plot results.
+________________________________________
+Step 2. Load dataset (MNIST or CIFAR10)
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+➡ Here we get:
+•	x_train: 60,000 images for training
+•	y_train: labels (0–9) for each image
+•	x_test: 10,000 images for testing
+•	y_test: labels for testing
+Each MNIST image is 28×28 pixels, black and white.
+________________________________________
+Step 3. Preprocess data
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0
+x_train = x_train.reshape((60000, 784))
+x_test = x_test.reshape((10000, 784))
+➡ This step does:
+1.	Converts data type to float.
+2.	Divides by 255 → so pixel values become between 0 and 1 (makes learning easier).
+3.	Flattens each 28×28 image into a single long row of 784 numbers.
+________________________________________
+Step 4. Build the neural network
+model = keras.models.Sequential([
+    keras.layers.Dense(512, activation='relu', input_shape=(784,)),
+    keras.layers.Dense(256, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+➡ Here:
+•	Sequential: means we’re stacking layers one after another.
+•	Dense: means each neuron is connected to every neuron in the next layer.
+•	ReLU: activation function → helps model learn complex patterns.
+•	Softmax: gives probability for each class (like [0.9, 0.1, 0, 0, ...]).
+So, structure:
+Input (784) → Hidden Layer 1 (512 neurons)
+            → Hidden Layer 2 (256 neurons)
+            → Output Layer (10 neurons)
+________________________________________
+Step 5. Compile the model
+model.compile(
+    optimizer=keras.optimizers.SGD(learning_rate=0.01, momentum=0.9),
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+➡ Explanation:
+•	Optimizer: SGD (Stochastic Gradient Descent) → updates weights gradually to reduce error.
+•	Learning rate: how fast the model learns.
+•	Loss: measures how far predictions are from correct answers.
+•	Metrics: accuracy shows performance.
+________________________________________
+Step 6. Train the model
+history = model.fit(x_train, y_train, epochs=15, batch_size=64, validation_split=0.1)
+➡ Explanation:
+•	epochs: how many times the model sees the whole dataset.
+•	batch_size: how many samples to process before updating weights.
+•	validation_split: 10% data is used for checking accuracy after each epoch.
+As it trains, it prints loss and accuracy for both training and validation data.
+________________________________________
+Step 7. Evaluate the model
+model.evaluate(x_test, y_test)
+➡ Checks how well the model performs on unseen test data.
+________________________________________
+Step 8. Plot graphs
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.legend()
+plt.show()
+
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.legend()
+plt.show()
+➡ Helps you visualize:
+•	Loss curve: should go down with time.
+•	Accuracy curve: should go up with time.
+________________________________________
+✅ Result
+The Feedforward Neural Network successfully learns to recognize handwritten digits.
+You’ll see training accuracy ≈ 97–99% and test accuracy ≈ 96–98% for MNIST.
+For CIFAR-10, it may be lower (~50–60%) because FFN is not ideal for color images.
+________________________________________
+📊 Conclusion
+•	FFN can classify simple images by learning from pixel patterns.
+•	Accuracy depends on layer size, learning rate, and training epochs.
+•	For complex images, CNNs work better.
+________________________________________
+💻 PART 3: Code explanation (your notebook)
+Here’s what each of your notebook sections does — simply put:
+Cell	What it does	Simple meaning
+1	Import libraries	Brings all required tools (TensorFlow, Keras, NumPy, Matplotlib).
+2	Set seed values	Makes results repeatable.
+3	Load dataset	Loads MNIST or CIFAR10 images & labels.
+4	Preprocess data	Converts images to float, normalizes, flattens, adds channel dims.
+5	Visual check	Displays a few training images to confirm they loaded correctly.
+6	Define model	Creates the Feedforward Neural Network (input → hidden → output).
+7	Compile model	Sets optimizer (SGD), loss, and accuracy metric.
+8	Flatten images	Reshapes the data for input to Dense layers.
+9	Train model	Runs model training for 15 epochs.
+10	Plot graphs	Shows loss and accuracy over time.
+11	Evaluate	Checks performance on test data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Experiment 2 CIFAR
+
+🧠 PART 1: What this experiment is about (in simple words)
+This experiment is about teaching a computer to recognize small color images (like airplanes, cars, dogs, etc.)
+using a Feedforward Neural Network (FFN) — a basic type of Artificial Neural Network built using Keras and TensorFlow.
+You’ll use the CIFAR-10 dataset, which has:
+•	50,000 training images
+•	10,000 testing images
+•	Each image is 32×32 pixels, colored (3 channels), and belongs to one of 10 classes (airplane, bird, dog, etc.)
+Here, we’ll build a simple Dense Network (no convolution) to classify these images —
+we flatten each image into a long row of numbers and train the model to map those pixels to the correct label.
+🧩 Think of it like teaching a student to identify objects just from colored pixel patterns.
+________________________________________
+📘 PART 2: Step-by-step notes (for journal / viva)
+🧩 Aim
+To implement and train a Feedforward Neural Network (FFN) on the CIFAR-10 dataset using Keras and TensorFlow,
+and evaluate its performance using Stochastic Gradient Descent (SGD) optimizer.
+________________________________________
+🧠 Theory (in simple language)
+•	A Feedforward Neural Network (FFN) is the simplest type of Artificial Neural Network.
+•	Information moves only in one direction — from input → hidden → output layers.
+•	Each neuron has weights and biases, and uses an activation function to decide what output to pass forward.
+•	The model learns by adjusting weights so that its predicted outputs match the correct labels (using a loss function).
+For CIFAR-10:
+•	Input: image pixels (32×32×3 = 3072 numbers)
+•	Hidden Layers: detect color and texture patterns
+•	Output: 10 neurons for 10 classes (softmax gives probabilities)
+________________________________________
+⚙️ Algorithm / Steps
+Step 1. Import necessary packages
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
+➡ Used for model building, training, and visualization.
+________________________________________
+Step 2. Load the CIFAR-10 dataset
+(x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
+➡ This gives:
+•	x_train: 50,000 images (32×32×3)
+•	y_train: corresponding labels (0–9)
+•	x_test: 10,000 test images
+•	y_test: labels for test images
+________________________________________
+Step 3. Preprocess the data
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0
+x_train = x_train.reshape((x_train.shape[0], -1))
+x_test = x_test.reshape((x_test.shape[0], -1))
+➡ Converts pixel values (0–255) → (0–1) range for better learning.
+➡ Flattens each image (32×32×3 = 3072 numbers).
+Now each image becomes a long vector of 3072 values.
+________________________________________
+Step 4. Define the neural network model
+model = keras.models.Sequential([
+    keras.layers.Input(shape=(3072,)),
+    keras.layers.Dense(1024, activation='relu'),
+    keras.layers.Dense(512, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+➡ Sequential: stack layers in order
+➡ Dense layers: fully connected neurons
+➡ ReLU: makes the network learn non-linear features
+➡ Softmax: converts outputs into class probabilities (for 10 categories)
+________________________________________
+Step 5. Compile the model
+model.compile(
+    optimizer=keras.optimizers.SGD(learning_rate=0.01, momentum=0.9),
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+➡ Optimizer: SGD (updates weights to reduce error gradually)
+➡ Loss: measures how wrong predictions are
+➡ Metrics: accuracy (performance indicator)
+________________________________________
+Step 6. Train the model
+history = model.fit(x_train, y_train, epochs=20, batch_size=64, validation_split=0.1)
+➡ The model learns by repeatedly looking at the training images.
+•	Epochs: how many times it sees all images
+•	Batch size: number of images processed together
+•	Validation split: 10% used for checking accuracy after each epoch.
+________________________________________
+Step 7. Evaluate the model
+model.evaluate(x_test, y_test)
+➡ Tests the trained model on unseen images (test set)
+➡ Prints test loss and test accuracy
+________________________________________
+Step 8. Plot training loss and accuracy
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.legend(); plt.show()
+➡ Helps visualize how well the model is learning —
+accuracy should go up, loss should go down.
+________________________________________
+🧾 Result
+•	The Feedforward Neural Network successfully classifies CIFAR-10 images.
+•	Typical test accuracy is around 45–60% (since FFN isn’t ideal for complex images).
+•	Adding more layers or using CNNs can improve accuracy significantly.
+________________________________________
+✅ Conclusion
+•	The experiment shows how Feedforward Neural Networks can classify image data.
+•	Performance depends on the dataset complexity and network depth.
+•	FFNs work fine for simple data (like MNIST) but struggle with colored images (like CIFAR-10).
+________________________________________
+💬 Viva Questions
+Question	Simple Answer
+What is a Feedforward Neural Network?	A neural network where data flows only in one direction — from input to output.
+What optimizer was used here?	Stochastic Gradient Descent (SGD).
+What does ReLU do?	It removes negative values and keeps positive ones, helping the model learn faster.
+Why do we normalize images?	To make all pixel values small (0–1), helping the model train efficiently.
+What is softmax used for?	To convert the output into probabilities for multiple classes.
+Why is accuracy lower for CIFAR-10?	Because FFN can’t capture spatial features of color images like CNNs can.
+________________________________________
+💻 PART 3: Code Explanation (your notebook)
+Step	Code Part	Explanation (in simple words)
+Cell 1	Import libraries	Brings TensorFlow, Keras, Numpy, Matplotlib for deep learning and plotting.
+Cell 2	Load dataset	Loads CIFAR-10 images (32×32 color) and labels (0–9).
+Cell 3	Preprocess data	Converts image pixels to [0,1] and reshapes for Dense input.
+Cell 4	Build model	Creates Feedforward Neural Network (Dense layers).
+Cell 5	Compile model	Selects optimizer (SGD), loss (cross-entropy), and accuracy metric.
+Cell 6	Train model	Trains the FFN for several epochs using batches of 64.
+Cell 7	Evaluate model	Calculates accuracy on unseen test data.
+Cell 8	Plot accuracy/loss	Displays how well the model learned (accuracy up, loss down).
+________________________________________
+🪄 Simple Analogy
+Model Part	Real-World Example
+Input layer	Eyes taking in the image
+Hidden layers	Brain neurons recognizing colors and shapes
+Output layer	Brain deciding the correct category (e.g., “dog”)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Experiment 3
+
+🧠 PART 1: What this experiment is about (in simple words)
+This practical is about building an Image Classification Model using Keras and TensorFlow, step by step.
+We train a computer to recognize images from the CIFAR-10 dataset — a popular dataset with:
+•	50,000 training images and 10,000 testing images
+•	Each image is 32×32 pixels, color (RGB)
+•	There are 10 classes: airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck
+The model is built in 4 stages:
+1.	Loading and Preprocessing the image data
+2.	Defining the Model’s Architecture
+3.	Training the Model
+4.	Estimating Model Performance (evaluation, graphs, confusion matrix)
+________________________________________
+📘 PART 2: Exam-ready notes (for your journal)
+🧩 Title
+Build the Image Classification Model by dividing it into 4 stages:
+a. Loading and preprocessing the image data
+b. Defining the model’s architecture
+c. Training the model
+d. Estimating the model’s performance
+________________________________________
+🎯 Aim
+To develop and train an image classification model using Keras and TensorFlow on the CIFAR-10 dataset, and evaluate its performance.
+________________________________________
+🧠 Theory (in simple words)
+•	Image Classification means automatically predicting which class an image belongs to (for example, “dog” or “car”).
+•	A Convolutional Neural Network (CNN) or Feedforward Neural Network (FFN) can be used for this purpose.
+•	CNNs are better because they detect spatial features (edges, colors, shapes).
+•	The process includes:
+1.	Loading the dataset
+2.	Normalizing image pixel values (0–1 range)
+3.	Building a neural network (layers)
+4.	Training it to minimize loss
+5.	Checking accuracy and visualizing results
+________________________________________
+⚙️ Algorithm / Steps
+Stage (a): Loading and Preprocessing the Image Data
+(x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
+x_train = x_train.astype("float32") / 255.0
+x_test = x_test.astype("float32") / 255.0
+•	Loads CIFAR-10 dataset
+•	Converts pixel values from 0–255 → 0–1
+•	Prepares train and test sets for the model
+✅ Purpose: make the data ready for training (normalized and separated).
+________________________________________
+Stage (b): Defining the Model Architecture
+model = keras.models.Sequential([
+    keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
+    keras.layers.MaxPooling2D(2,2),
+    keras.layers.Conv2D(64, (3,3), activation='relu'),
+    keras.layers.MaxPooling2D(2,2),
+    keras.layers.Flatten(),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+➡ The model has:
+1.	Conv2D Layers: detect patterns and features from images
+2.	MaxPooling2D Layers: reduce image size and computation
+3.	Flatten Layer: convert 2D features into a 1D vector
+4.	Dense Layers: perform classification
+5.	Softmax Layer: outputs probabilities for each of 10 classes
+✅ Purpose: define how the neural network looks and learns from data.
+________________________________________
+Stage (c): Training the Model
+optimizer = keras.optimizers.SGD(learning_rate=0.01, momentum=0.9)
+model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+history = model.fit(x_train, y_train, epochs=12, batch_size=64, validation_split=0.1)
+•	SGD Optimizer: Stochastic Gradient Descent used to update weights
+•	Loss Function: measures how wrong predictions are
+•	Metrics: accuracy used to measure correctness
+•	The model learns from images for 12 epochs (12 passes over the dataset)
+✅ Purpose: train the neural network using CIFAR-10 images.
+________________________________________
+Stage (d): Estimating Model Performance
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"Test Accuracy = {test_acc:.4f}")
+✅ Purpose: test the model on unseen data (test set) and get final accuracy.
+You can also visualize results:
+plt.plot(history.history['accuracy'], label='Train Acc')
+plt.plot(history.history['val_accuracy'], label='Val Acc')
+plt.legend()
+plt.show()
+And analyze using a confusion matrix:
+from sklearn.metrics import confusion_matrix
+y_pred = model.predict(x_test)
+cm = confusion_matrix(y_test, np.argmax(y_pred, axis=1))
+sns.heatmap(cm, annot=True)
+________________________________________
+📊 Result
+•	The model successfully classifies CIFAR-10 images.
+•	Typical test accuracy is around 70–80% (depending on architecture and epochs).
+•	The loss curve decreases while accuracy improves, showing effective training.
+________________________________________
+✅ Conclusion
+•	The experiment demonstrates the full workflow of building an image classifier using deep learning.
+•	Dividing the process into stages (load, define, train, evaluate) helps understand each step clearly.
+•	CNNs work efficiently for image classification tasks.
+________________________________________
+💬 Viva Questions and Simple Answers
+Question	Simple Answer
+What dataset is used?	CIFAR-10, with 10 classes of colored images.
+Why normalize the image data?	To keep pixel values small and make training stable.
+What optimizer was used?	Stochastic Gradient Descent (SGD).
+What is the activation function used?	ReLU for hidden layers, Softmax for output.
+What is the purpose of the Flatten layer?	Converts 2D image data into a 1D vector before Dense layers.
+What does a convolution layer do?	It extracts local features like edges or colors from the image.
+What does pooling do?	Reduces the image size and helps the model focus on important features.
+Why use softmax in output?	It converts model output into class probabilities.
+________________________________________
+💻 PART 3: Code explanation (your notebook stages)
+Cell / Stage	Description (simple)
+Cell 1	Imports libraries and sets random seeds for reproducibility.
+Cell 2	Loads CIFAR-10 dataset and shows an example image.
+Cell 3	Applies data preprocessing and optional data augmentation.
+Cell 4	Defines CNN model architecture using Conv, Pooling, Flatten, and Dense layers.
+Cell 5	Compiles model using SGD optimizer.
+Cell 6	Trains the model for 12 epochs with callbacks (checkpoint, early stopping).
+Cell 7	Plots accuracy and loss curves for training and validation.
+Cell 8	Evaluates model on test set and prints accuracy.
+Cell 9	Displays confusion matrix and classification report for deeper analysis.
+________________________________________
+🪄 Simple Analogy
+Neural Network Part	Real-life Comparison
+Input Layer	Eyes seeing the picture
+Convolution + Pooling	Brain extracting features like color and shape
+Dense Layers	Brain deciding what object it is
+Output (Softmax)	Final decision (“this is a dog!”)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Experiment 4
+
+🧠 PART 1 — What the experiment is about (very simple)
+An autoencoder is a neural network that learns to reconstruct its input.
+For anomaly detection we:
+1.	Train the autoencoder on normal data only (examples without anomalies).
+2.	Later, give it new inputs — if the reconstruction error is low, input is normal; if high, input is likely an anomaly.
+Think: train the network to copy normal images. If it fails badly to copy a new image, that image is unusual.
+________________________________________
+📘 PART 2 — Exam-ready notes (short & printable)
+Title: Use Autoencoder to implement anomaly detection
+Aim: Build an autoencoder using Keras/TensorFlow, train it on normal data, and detect anomalies by thresholding reconstruction error.
+Dataset (example): MNIST (60k train, 10k test). Choose one digit as “normal” (e.g., digit 1) and treat other digits as anomalies for testing.
+Autoencoder idea:
+•	Encoder: compresses input → latent vector (small d).
+•	Decoder: reconstructs latent → original input size.
+•	Training objective: minimize reconstruction error (e.g., MSE).
+•	Anomaly decision: reconstruction error > threshold → anomaly.
+Preprocessing:
+•	Normalize pixel values to [0,1]
+•	Flatten images for a dense autoencoder, or keep 2D for convolutional autoencoder
+Model (examples):
+•	Dense autoencoder: Input(784) → Dense(128) → Dense(32) (latent) → Dense(128) → Dense(784)
+•	Conv autoencoder: Conv2D → MaxPool → Conv2D (bottleneck) → Conv2DTranspose → Upsampling → Output
+Compile settings (example):
+•	Optimizer: Adam or SGD
+•	Loss: mean_squared_error or binary_crossentropy
+•	Metrics: mae (mean absolute error) or custom reconstruction error
+Training:
+•	Train on normal samples only (epochs 20–50, batch_size 64)
+•	Save validation loss to detect overfitting
+Anomaly detection:
+•	Compute reconstruction error for test samples
+•	Choose threshold (e.g., mean_train_error + 3 * std_train_error) or via ROC curve
+•	Evaluate: precision, recall, F1-score, confusion matrix
+Conclusion: Autoencoders can detect anomalies that differ from the normal training distribution. For complex anomalies or images, convolutional autoencoders perform better.
+________________________________________
+⚙️ PART 3 — Step-by-step algorithm (mapping to your a→e)
+a. Import required libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow import keras
+from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
+b. Upload / access dataset
+•	Example: keras.datasets.mnist.load_data()
+•	Choose normal class (e.g., label == 1) for training
+c. Encoder converts to latent representation
+•	Build encoder layers that shrink the input to a small latent vector (e.g., 32 dims)
+d. Decoder converts latent back
+•	Symmetric decoder that expands latent to original input shape
+e. Compile the model
+•	optimizer=Adam(lr=0.001), loss='mse', track metrics like mae
+________________________________________
+💻 PART 4 — Ready-to-run Keras code (Dense autoencoder on MNIST)
+Copy & paste into a cell or save as autoencoder_anomaly_mnist.py. This trains on one digit (normal) and tests on others as anomalies.
+# Autoencoder for Anomaly Detection (MNIST example)
+import numpy as np
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow import keras
+from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
+
+# 1) Load dataset
+(x_train_full, y_train_full), (x_test_full, y_test_full) = keras.datasets.mnist.load_data()
+
+# Choose normal class (e.g., digit 1). Train only on normal samples.
+NORMAL_CLASS = 1
+x_train = x_train_full[y_train_full.flatten() == NORMAL_CLASS]
+y_train = y_train_full[y_train_full.flatten() == NORMAL_CLASS]
+
+# For testing, keep both normal and anomaly examples
+x_test = x_test_full.copy()
+y_test = y_test_full.copy()
+
+# 2) Preprocess: scale to [0,1] and flatten
+x_train = x_train.astype('float32') / 255.0
+x_test  = x_test.astype('float32') / 255.0
+x_train = x_train.reshape((x_train.shape[0], -1))  # 28*28 = 784
+x_test  = x_test.reshape((x_test.shape[0], -1))
+
+# 3) Build dense autoencoder
+input_dim = x_train.shape[1]  # 784
+latent_dim = 32
+
+# Encoder
+inputs = keras.Input(shape=(input_dim,))
+h = keras.layers.Dense(128, activation='relu')(inputs)
+h = keras.layers.Dense(64, activation='relu')(h)
+latent = keras.layers.Dense(latent_dim, activation='relu', name='latent')(h)
+
+# Decoder
+h2 = keras.layers.Dense(64, activation='relu')(latent)
+h2 = keras.layers.Dense(128, activation='relu')(h2)
+outputs = keras.layers.Dense(input_dim, activation='sigmoid')(h2)  # sigmoid because input is [0,1]
+
+autoencoder = keras.Model(inputs, outputs, name='autoencoder')
+encoder = keras.Model(inputs, latent, name='encoder')  # for inspection/visualizing latent
+
+# 4) Compile the model
+autoencoder.compile(optimizer=keras.optimizers.Adam(learning_rate=1e-3),
+                    loss='mse',
+                    metrics=[keras.metrics.MeanAbsoluteError()])
+
+autoencoder.summary()
+
+# 5) Train on normal images only
+history = autoencoder.fit(x_train, x_train,
+                          epochs=30,
+                          batch_size=128,
+                          validation_split=0.1,
+                          verbose=2)
+
+# 6) Compute reconstruction error on training set to set threshold
+recon_train = autoencoder.predict(x_train)
+train_mse = np.mean(np.square(recon_train - x_train), axis=1)
+threshold = np.mean(train_mse) + 3 * np.std(train_mse)
+print("Threshold (mean + 3*std) =", threshold)
+
+# 7) Apply to test set: compute per-sample reconstruction MSE
+recon_test = autoencoder.predict(x_test)
+test_mse = np.mean(np.square(recon_test - x_test), axis=1)
+
+# Make anomaly predictions: 1 if anomaly, 0 if normal
+y_true = (y_test.flatten() != NORMAL_CLASS).astype(int)  # anomalies = 1
+y_pred = (test_mse > threshold).astype(int)
+
+# 8) Evaluation metrics
+prec = precision_score(y_true, y_pred)
+rec = recall_score(y_true, y_pred)
+f1 = f1_score(y_true, y_pred)
+cm = confusion_matrix(y_true, y_pred)
+
+print(f"Precision: {prec:.4f}, Recall: {rec:.4f}, F1: {f1:.4f}")
+print("Confusion Matrix (rows: true [0 normal,1 anomaly]; cols: pred [0 normal,1 anomaly])")
+print(cm)
+
+# 9) Plot a few examples: original, reconstruction, mse
+n = 6
+plt.figure(figsize=(12,6))
+for i in range(n):
+    ax = plt.subplot(3, n, i+1)
+    plt.imshow(x_test[i].reshape(28,28), cmap='gray')
+    plt.title(f"True:{y_test[i][0]}")
+    plt.axis('off')
+
+    ax = plt.subplot(3, n, i+1+n)
+    plt.imshow(recon_test[i].reshape(28,28), cmap='gray')
+    plt.title(f"Recon")
+    plt.axis('off')
+
+    ax = plt.subplot(3, n, i+1+2*n)
+    plt.plot((x_test[i] - recon_test[i])**2)
+    plt.title(f"MSE:{test_mse[i]:.4f}")
+    plt.axis('off')
+plt.tight_layout(); plt.show()
+________________________________________
+🔎 PART 5 — Short explanation of the code (line-by-line highlights)
+•	Loading data: keras.datasets.mnist.load_data() gives arrays of images and labels.
+•	Selecting normal class: we only keep samples of NORMAL_CLASS for training the autoencoder.
+•	Preprocessing: scale to [0,1] and flatten images to make them vectors for a dense autoencoder.
+•	Model: encoder reduces 784 → 128 → 64 → 32 (latent). Decoder mirrors that to reconstruct original 784 pixels.
+•	Compile: use Adam optimizer, mse loss (suitable for reconstruction), track mae as metric.
+•	Train: model learns to reconstruct normal samples.
+•	Threshold: compute train reconstruction error distribution and pick mean + 3*std as a simple threshold.
+•	Predict anomalies: test samples with reconstruction MSE > threshold are anomalies.
+•	Evaluate: precision, recall, F1 and confusion matrix compare predicted anomalies to true anomalies (we defined anomaly = any digit ≠ normal digit).
+•	Plot: show original vs reconstruction and MSE to visualize detection.
+________________________________________
+✅ PART 6 — Interpretation & tips (simple)
+•	If the autoencoder is trained only on normal data, it should reconstruct them well (low error) and reconstruct anomalies poorly (high error).
+•	The threshold choice matters — adjust using validation set or ROC curve to get desired precision/recall.
+•	For image tasks, convolutional autoencoders (Conv2D + Conv2DTranspose) usually give much better reconstructions than dense autoencoders.
+•	If anomalies are subtle, consider more powerful models or using latent-space anomaly scoring.
+________________________________________
+💬 PART 7 — Quick Viva Qs (with one-line answers)
+Q: Why train autoencoder only on normal samples?
+A: Because the model must learn the normal data distribution; anomalies will then produce high reconstruction error.
+Q: Which loss is used for reconstruction?
+A: MSE (mean squared error) is common; binary_crossentropy can be used when inputs are binary-like.
+Q: How choose threshold for anomaly?
+A: Statistical rule (mean + k*std), or choose threshold by ROC/AUC on validation data.
+Q: Why use convolutional autoencoder for images?
+A: Conv layers capture spatial patterns and local features (edges, textures), improving reconstruction for images.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Experiment 5
+
+🧠 PART 1: What this experiment is about (in simple words)
+This experiment shows how to build a Continuous Bag of Words (CBOW) model — a type of Word2Vec neural network used in Natural Language Processing (NLP).
+CBOW learns word embeddings — i.e., converts words into numeric vectors that capture meaning.
+💡 Idea:
+Given a few surrounding words (context), predict the target word.
+For example:
+In the sentence → “The cat sits on the mat”
+If we take context = [“The”, “sits”], then the target word is “cat”.
+The model learns to predict words from their neighbors — this helps it understand semantic meaning (e.g., “king” and “queen” get similar vector patterns).
+________________________________________
+📘 PART 2: Exam-ready Notes (for journal)
+🧩 Title
+Implement the Continuous Bag of Words (CBOW) Model.
+Stages:
+a. Data Preparation
+b. Generate Training Data
+c. Train Model
+d. Output
+________________________________________
+🎯 Aim
+To implement the Continuous Bag of Words (CBOW) model using a small text dataset and train it to learn meaningful word embeddings.
+________________________________________
+🧠 Theory (in simple words)
+•	Word2Vec is a neural network-based model that converts words into dense vector representations (embeddings).
+•	CBOW and Skip-gram are two architectures of Word2Vec.
+•	CBOW predicts a word from its context (surrounding words).
+•	Skip-gram does the opposite — predicts surrounding words from a given word.
+•	CBOW uses a simple neural network with:
+o	Input layer: context words
+o	Hidden layer: embedding (vector representation)
+o	Output layer: target word (probability for each word)
+Example:
+Context: ["I", "machine"]
+Target: "love"
+Model learns:
+→ If "I" and "machine" appear around "love", then "love" is strongly related to them.
+________________________________________
+⚙️ Algorithm / Steps
+Stage (a): Data Preparation
+1.	Collect a small text corpus (few sentences).
+2.	Convert text to lowercase and split into words (tokenize).
+3.	Create a vocabulary (unique words → numeric indices).
+Example:
+corpus = "I love machine learning and deep learning"
+tokens = corpus.lower().split()
+vocab = set(tokens)
+word2idx = {w:i for i,w in enumerate(vocab)}
+________________________________________
+Stage (b): Generate Training Data
+1.	Define context window size (e.g., 2 words before and after the target).
+2.	For each target word, collect its context words.
+3.	Convert words to indices using word2idx.
+Example:
+def generate_training_data(tokens, window_size):
+    data = []
+    for i in range(window_size, len(tokens) - window_size):
+        context = [tokens[i - window_size + j] for j in range(2 * window_size) if j != window_size]
+        target = tokens[i]
+        data.append((context, target))
+    return data
+________________________________________
+Stage (c): Train the Model
+1.	Build a simple neural network in Keras:
+o	Input → Embedding → Average → Dense → Softmax
+2.	Train it using context words as input, target word as output.
+Example:
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Lambda, Dense
+from tensorflow.keras.preprocessing.sequence import skipgrams
+import tensorflow.keras.backend as K
+
+# parameters
+vocab_size = len(vocab)
+embed_dim = 8
+
+# CBOW model
+model = Sequential()
+model.add(Embedding(vocab_size, embed_dim, input_length=2*window_size))
+model.add(Lambda(lambda x: K.mean(x, axis=1), output_shape=(embed_dim,)))
+model.add(Dense(vocab_size, activation='softmax'))
+
+model.compile(loss='categorical_crossentropy', optimizer='adam')
+________________________________________
+Stage (d): Output
+1.	After training, extract the word embeddings.
+2.	Find similar words by comparing embeddings (using cosine similarity).
+3.	Visualize or print embeddings for interpretation.
+Example:
+weights = model.get_weights()[0]
+for word, idx in word2idx.items():
+    print(f"{word}: {weights[idx]}")
+________________________________________
+📊 Result
+•	The CBOW model successfully learns word embeddings from text.
+•	Words used in similar contexts have similar vector values.
+•	These embeddings can be used for other NLP tasks (classification, translation, etc.).
+________________________________________
+✅ Conclusion
+•	CBOW efficiently learns relationships between words.
+•	It captures the semantic meaning and contextual similarity between words.
+•	For small datasets, results are basic; with large corpora (like Google News), embeddings become highly accurate.
+________________________________________
+💬 PART 3: Viva Questions (simple answers)
+Question	Answer
+What is CBOW?	A model that predicts a target word based on surrounding context words.
+What is Skip-gram?	Opposite of CBOW; predicts context words from a single target word.
+What is a word embedding?	A numeric vector representation of a word that captures its meaning.
+Which layer is used for embeddings?	The Embedding layer in Keras.
+What is the output of CBOW?	A probability distribution over all words (predicted target word).
+Which activation function is used at the output layer?	Softmax.
+Which optimizer is commonly used?	Adam or SGD.
+What is context window size?	Number of words used before and after the target word.
+________________________________________
+💻 PART 4: Full Example Code (Simple Keras Implementation)
+# Continuous Bag of Words (CBOW) model example
+
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Lambda, Dense
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.utils import to_categorical
+import tensorflow.keras.backend as K
+
+# Stage (a) — Data Preparation
+corpus = "I love machine learning and deep learning"
+corpus = corpus.lower().split()
+
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(corpus)
+word2idx = tokenizer.word_index
+idx2word = {v:k for k,v in word2idx.items()}
+vocab_size = len(word2idx) + 1
+
+# Stage (b) — Generate Training Data
+window_size = 2
+data = []
+for i in range(window_size, len(corpus) - window_size):
+    context = [corpus[i - 2], corpus[i - 1], corpus[i + 1], corpus[i + 2]]
+    target = corpus[i]
+    data.append((context, target))
+
+X = []
+y = []
+for context, target in data:
+    X.append([word2idx[w] for w in context])
+    y.append(to_categorical(word2idx[target], vocab_size))
+
+X = np.array(X)
+y = np.array(y)
+
+# Stage (c) — Build and Train Model
+model = Sequential()
+model.add(Embedding(vocab_size, 8, input_length=4))
+model.add(Lambda(lambda x: K.mean(x, axis=1), output_shape=(8,)))
+model.add(Dense(vocab_size, activation='softmax'))
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+model.fit(X, y, epochs=100, verbose=0)
+print("✅ Training complete!")
+
+# Stage (d) — Output
+weights = model.get_weights()[0]
+for word, idx in word2idx.items():
+    print(f"{word}: {weights[idx]}")
+________________________________________
+🪄 Simple Analogy
+CBOW concept	Real-life comparison
+Context words	Clues around a missing word
+Target word	The missing word itself
+Embedding layer	Brain forming understanding of word meaning
+Softmax output	Guessing the correct word
+
+
+
+
+
+
+Experiment 6
+
+🧠 PART 1: What this experiment is about (in simple words)
+This experiment shows how to perform Object Detection / Image Classification using Transfer Learning —
+a method where we reuse a pre-trained CNN (like VGG16, ResNet, or MobileNet) that has already learned features from a large dataset (e.g., ImageNet).
+Instead of training from scratch, we:
+1.	Load a pre-trained CNN model
+2.	Freeze its early layers (they already know how to detect general features like edges, shapes)
+3.	Add new classifier layers on top for our specific dataset
+4.	Train only the new layers
+5.	Optionally unfreeze deeper layers and fine-tune them for better accuracy.
+🧩 Think of it like taking a student who already knows how to recognize shapes and teaching them to recognize a new type of object faster — instead of starting from zero.
+________________________________________
+📘 PART 2: Exam-Ready Notes
+🧩 Title
+Object Detection using Transfer Learning of CNN Architectures
+________________________________________
+🎯 Aim
+To build an object detection/classification model using transfer learning with a pre-trained CNN,
+by freezing early layers and training new classifier layers for the given dataset.
+________________________________________
+🧠 Theory (in simple words)
+•	CNN (Convolutional Neural Network) models like VGG16, ResNet50, InceptionV3, and MobileNet are trained on massive datasets like ImageNet with millions of images.
+•	These networks learn to detect low-level features (edges, shapes, colors) and high-level features (objects, textures).
+•	Transfer Learning uses these pre-learned features and adapts them to a smaller, specific dataset — saving time and improving performance.
+•	Steps:
+1.	Load a pre-trained CNN (e.g., VGG16)
+2.	Freeze the convolutional base layers
+3.	Add new Dense layers for classification
+4.	Train only these new layers
+5.	Optionally unfreeze some deeper layers and fine-tune for accuracy
+________________________________________
+⚙️ Algorithm / Steps
+(a) Load a pre-trained CNN model
+from tensorflow.keras.applications import VGG16
+
+base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+base_model.summary()
+✅ Loads VGG16 pre-trained on ImageNet
+✅ include_top=False removes the last classification layers
+✅ Keeps the convolutional base for feature extraction
+________________________________________
+(b) Freeze parameters (weights) in model’s lower layers
+for layer in base_model.layers:
+    layer.trainable = False
+✅ Freezes weights — early layers won’t change during training
+✅ Prevents loss of pre-learned general image features
+________________________________________
+(c) Add custom classifier layers
+from tensorflow.keras import models, layers
+
+model = models.Sequential([
+    base_model,
+    layers.Flatten(),
+    layers.Dense(256, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(num_classes, activation='softmax')
+])
+✅ Adds new layers for your dataset (e.g., animals, vehicles, etc.)
+✅ These layers are trainable and learn new object-specific patterns
+________________________________________
+(d) Train classifier layers
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+history = model.fit(train_data, validation_data=val_data, epochs=10)
+✅ Uses Adam optimizer for faster convergence
+✅ Trains only top layers (base model is frozen)
+✅ Monitors validation accuracy to check generalization
+________________________________________
+(e) Fine-tune and unfreeze layers
+# Unfreeze deeper layers for fine-tuning
+for layer in base_model.layers[-4:]:
+    layer.trainable = True
+
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-5),
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+history_fine = model.fit(train_data, validation_data=val_data, epochs=5)
+✅ Carefully unfreezes the last few convolutional layers
+✅ Fine-tunes them on your specific dataset with a smaller learning rate
+✅ Improves accuracy further
+________________________________________
+📊 Result
+•	The transfer learning model successfully classifies images with high accuracy (usually >90% for small datasets).
+•	Training time is much shorter compared to building a CNN from scratch.
+•	Model learns both general (edges, textures) and task-specific features.
+________________________________________
+✅ Conclusion
+•	Transfer Learning reuses pre-trained CNN knowledge to efficiently solve new tasks.
+•	Freezing lower layers preserves general visual features.
+•	Fine-tuning deeper layers improves model accuracy.
+•	This method is widely used in modern computer vision (e.g., image classification, object detection, medical imaging).
+________________________________________
+💬 PART 3: Viva Questions (Simple Answers)
+Question	Answer (Simple)
+What is Transfer Learning?	Using a model pre-trained on one dataset for another similar task.
+Why freeze the base layers?	To keep general visual features learned from large datasets.
+Why add new layers?	To train on new, task-specific classes.
+What dataset is the base model pre-trained on?	ImageNet (commonly used, with 1,000 classes).
+What optimizer is used?	Adam or SGD.
+What happens if you unfreeze too many layers?	The model may overfit or forget earlier knowledge (catastrophic forgetting).
+What is fine-tuning?	Adjusting a few layers of a pre-trained model with a low learning rate.
+Why use dropout?	To prevent overfitting during training.
+What are examples of pre-trained models?	VGG16, ResNet50, MobileNet, InceptionV3, EfficientNet.
+________________________________________
+💻 PART 4: Full Example Code (Simple and Ready-to-Run)
+# Transfer Learning for Object Classification (VGG16 Example)
+
+import tensorflow as tf
+from tensorflow.keras.applications import VGG16
+from tensorflow.keras import layers, models
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# (a) Load pretrained VGG16 model
+base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+for layer in base_model.layers:
+    layer.trainable = False  # (b) Freeze base layers
+
+# (c) Add custom classifier layers
+model = models.Sequential([
+    base_model,
+    layers.Flatten(),
+    layers.Dense(256, activation='relu'),
+    layers.Dropout(0.5),
+    layers.Dense(3, activation='softmax')  # Example: 3 classes
+])
+
+# Data generators for train/validation
+train_datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
+train_data = train_datagen.flow_from_directory(
+    'dataset/train', target_size=(224, 224), batch_size=32, subset='training')
+val_data = train_datagen.flow_from_directory(
+    'dataset/train', target_size=(224, 224), batch_size=32, subset='validation')
+
+# (d) Train classifier
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+history = model.fit(train_data, validation_data=val_data, epochs=10)
+
+# (e) Fine-tuning: unfreeze last few layers
+for layer in base_model.layers[-4:]:
+    layer.trainable = True
+
+model.compile(optimizer=tf.keras.optimizers.Adam(1e-5),
+              loss='categorical_crossentropy', metrics=['accuracy'])
+history_fine = model.fit(train_data, validation_data=val_data, epochs=5)
+
+# Evaluate model
+loss, acc = model.evaluate(val_data)
+print(f"Validation Accuracy: {acc*100:.2f}%")
+________________________________________
+🪄 Simple Analogy
+Transfer Learning Step	Real-Life Example
+Pre-trained CNN	A person already trained to recognize general objects
+Freeze layers	Don’t change what they already know
+Add classifier	Teach them to identify new objects
+Train top layers	They learn new things quickly
+Fine-tune deeper layers	Refine their understanding for higher accuracy
+
